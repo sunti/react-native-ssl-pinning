@@ -57,6 +57,13 @@ public class OkHttpUtils {
     public static MediaType mediaType = MediaType.parse(content_type);
     private static Interceptor customDebugInterceptor = null;
 
+    // This method is used to add a custom debug interceptor if it exists and the build is in debug mode.
+    private static void addCustomDebugInterceptor(OkHttpClient.Builder clientBuilder) {
+        if (BuildConfig.DEBUG && customDebugInterceptor != null) {
+            clientBuilder.addInterceptor(customDebugInterceptor);
+        }
+    }
+
     public static OkHttpClient buildOkHttpClient(CookieJar cookieJar, String domainName, ReadableArray certs, ReadableMap options) {
 
         OkHttpClient client = null;
@@ -84,9 +91,7 @@ public class OkHttpUtils {
             if (BuildConfig.DEBUG) {
                 clientBuilder.addInterceptor(logging);
             }
-            if (BuildConfig.DEBUG && customDebugInterceptor != null) {
-                clientBuilder.addInterceptor(customDebugInterceptor);
-            }
+            addCustomDebugInterceptor(clientBuilder);
 
             client = clientBuilder
                     .build();
@@ -128,9 +133,7 @@ public class OkHttpUtils {
             if (BuildConfig.DEBUG) {
                 clientBuilder.addInterceptor(logging);
             }
-            if (BuildConfig.DEBUG && customDebugInterceptor != null) {
-                clientBuilder.addInterceptor(customDebugInterceptor);
-            }
+             addCustomDebugInterceptor(clientBuilder);
 
             defaultClient = clientBuilder.build();
         }
